@@ -21,7 +21,7 @@ bool colledPlayerWithEnemy = false;
 struct gameScore
 {
     unsigned int score;
-}score;
+}score = {0};
 
 typedef struct enemy
 {
@@ -45,6 +45,8 @@ void enemyUpdate(ENEMY* listOfEnemies);
 void bulletUpdate(BULLET* listOfBullet);
 void collision(BULLET* listOfBullet, ENEMY* listOfEnemy);
 char* convertIntToString(void);
+void clearEnemyBullet(BULLET* listOfBullet, ENEMY* listofEnemy);
+
 
 int main(void)
 {
@@ -63,7 +65,6 @@ int main(void)
     BULLET listOfBullet[BULLET_SIZE];
     InitWindow(SIZE_WINDOW, SIZE_WINDOW, "BASIC GAME");
     SetTargetFPS(FRAME);
-    score.score = 0;
     while(!WindowShouldClose())
     {
         if(!buttonPressed_1)
@@ -90,11 +91,12 @@ int main(void)
             }
             BeginDrawing();
                 ClearBackground(WHITE);
-                DrawText("WELCOME TO MY GAME", 110, 140, 15, BLACK);
+                DrawText("SKY DEFENDER GAME", 120, 140, 15, BLACK);
                 DrawRectangle(Button_1.x, Button_1.y, Button_1.width, Button_1.height, defaultColor_1);
                 DrawRectangle(Button_2.x, Button_2.y, Button_2.width, Button_2.height, defaultColor_2);
                 DrawText("EXIT", Button_2.x+13, Button_2.y+10, 15, WHITE);
                 DrawText("START", Button_1.x+10, Button_1.y+10, 15, WHITE);
+                DrawText("CREATED BY : DALI FETHI ABDELLATIF", 50, 350, 15, BLACK);
                 if(buttonPressed_2)
                     exitWindow();
             EndDrawing();
@@ -129,14 +131,16 @@ int main(void)
                     colledPlayerWithEnemy = false;
                     buttonPressed_1 = false;
                     buttonPressed_2 = false;
+                    score.score = 0;
+                    clearEnemyBullet(listOfBullet, listOfEnemies);
                     free(scoreStr);
                 }
                 BeginDrawing();
                     ClearBackground(WHITE);
-                    DrawText("END GAME", 50, 100, 15, BLACK);
-                    DrawText("YOUR SCORE : ", 50, 150, 15, BLACK);
-                    DrawText(scoreStr, 180, 150, 18, BLACK);
-                    DrawText("PRESS ENTER TO RETURN HOME", 50, 200, 15, BLACK);
+                    DrawText("END GAME", 100, 100, 15, BLACK);
+                    DrawText("YOUR SCORE : ", 100, 150, 15, BLACK);
+                    DrawText(scoreStr, 230, 150, 18, BLACK);
+                    DrawText("PRESS ENTER", 100, 200, 15, BLACK);
                 EndDrawing();
             }
         }
@@ -144,11 +148,20 @@ int main(void)
     CloseWindow();
     return 0;
 }
+
+void clearEnemyBullet(BULLET* listOfBullet, ENEMY* listofEnemy)
+{
+    for(unsigned int i = 0; i < BULLET_SIZE; ++i)
+        listOfBullet[i].active = false;
+    for(unsigned int i = 0; i < BULLET_SIZE; ++i)
+        listofEnemy[i].active = false;
+}
+
 char* convertIntToString(void)
 {
     signed int TOP = -1;
+    unsigned int i = 0, number = score.score;
     unsigned char stack[MAX];
-    unsigned int number = score.score-10, i = 0;
     char* str = calloc(MAX, sizeof(char));
     while(i < MAX)
         str[i++] = '\0';
