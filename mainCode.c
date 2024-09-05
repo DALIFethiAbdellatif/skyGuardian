@@ -17,7 +17,7 @@
 signed int SQUARE_X = SIZE_WINDOW/2;
 signed int SQUARE_Y = SIZE_WINDOW - SQUARE_H;
 bool colledPlayerWithEnemy = false;
-
+Sound bulletShootSound, collisionSound;
 struct gameScore
 {
     unsigned int score;
@@ -65,6 +65,9 @@ int main(void)
     BULLET listOfBullet[BULLET_SIZE];
     InitWindow(SIZE_WINDOW, SIZE_WINDOW, "BASIC GAME");
     SetTargetFPS(FRAME);
+    InitAudioDevice();
+    bulletShootSound = LoadSound("gun-gunshot-02.wav");
+    collisionSound = LoadSound("you-lose-game-sound-230514.mp3");
     while(!WindowShouldClose())
     {
         if(!buttonPressed_1)
@@ -213,6 +216,7 @@ void collision(BULLET* listOfBullet, ENEMY* listOfEnemy)            // COLLISION
             {
                 listOfEnemy[i].active = false;
                 colledPlayerWithEnemy = true;
+                PlaySound(collisionSound);
                 break;
             }
         }
@@ -224,6 +228,7 @@ void bulletUpdate(BULLET* listOfBullet)                 // FUNCTION TO UPDATE BU
 {
     if(IsKeyPressed(KEY_SPACE))
     {
+        PlaySound(bulletShootSound);
         for(unsigned int i = 0; i < BULLET_SIZE; ++i)
         {
             if(!(listOfBullet[i].active))
